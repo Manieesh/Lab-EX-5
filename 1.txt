@@ -1,0 +1,177 @@
+class CashTree {
+    String name;
+    int codeNo;
+    String location;
+
+    public CashTree(String name, int codeNo, String location) {
+        this.name = name;
+        this.codeNo = codeNo;
+        this.location = location;
+    }
+
+    void viewBalance() {
+        System.out.println("ViewBalance method from CashTree");
+    }
+
+    void withdraw(double amount) {
+        System.out.println("Withdraw method from CashTree");
+    }
+
+    void deposit(double amount) {
+        System.out.println("Deposit method from CashTree");
+    }
+}
+
+class SBI_Bank extends CashTree {
+    String custName;
+    String accNo;
+    double balance;
+    final double serviceCharge = 5;
+    final double interestRate = 6;
+
+    public SBI_Bank(String name, int codeNo, String location,
+                    String custName, String accNo, double balance) {
+        super(name, codeNo, location);
+        this.custName = custName;
+        this.accNo = accNo;
+        this.balance = balance;
+    }
+
+    @Override
+    void viewBalance() {
+        System.out.println("SBI Bank Balance: ₹" + balance);
+    }
+
+    @Override
+    void withdraw(double amount) {
+        double totalAmount = amount + serviceCharge;
+        if (totalAmount <= balance) {
+            balance -= totalAmount;
+            System.out.println("Withdrawn: ₹" + amount + ", Service charge: ₹" + serviceCharge);
+            System.out.println("Remaining balance: ₹" + balance);
+        } else {
+            System.out.println("Insufficient balance to withdraw including service charge.");
+        }
+    }
+
+    @Override
+    void deposit(double amount) {
+        double interest = amount * interestRate / 100;
+        balance += amount + interest;
+        System.out.println("Deposited: ₹" + amount + ", Interest earned: ₹" + interest);
+        System.out.println("New balance: ₹" + balance);
+    }
+}
+
+class HDFC_Bank extends CashTree {
+    String custName;
+    String accNo;
+    double balance;
+    final double serviceCharge = 10;
+    final double interestRate = 5;
+
+    public HDFC_Bank(String name, int codeNo, String location,
+                     String custName, String accNo, double balance) {
+        super(name, codeNo, location);
+        this.custName = custName;
+        this.accNo = accNo;
+        this.balance = balance;
+    }
+
+    @Override
+    void viewBalance() {
+        System.out.println("HDFC Bank Balance: ₹" + balance);
+    }
+
+    @Override
+    void withdraw(double amount) {
+        double totalAmount = amount + serviceCharge;
+        if (totalAmount <= balance) {
+            balance -= totalAmount;
+            System.out.println("Withdrawn: ₹" + amount + ", Service charge: ₹" + serviceCharge);
+            System.out.println("Remaining balance: ₹" + balance);
+        } else {
+            System.out.println("Insufficient balance to withdraw including service charge.");
+        }
+    }
+
+    @Override
+    void deposit(double amount) {
+        double interest = amount * interestRate / 100;
+        balance += amount + interest;
+        System.out.println("Deposited: ₹" + amount + ", Interest earned: ₹" + interest);
+        System.out.println("New balance: ₹" + balance);
+    }
+}
+import java.util.Scanner;
+
+public class ATMApplication {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Select Bank:");
+        System.out.println("1. SBI Bank");
+        System.out.println("2. HDFC Bank");
+        int bankChoice = sc.nextInt();
+        sc.nextLine();
+
+        CashTree bank = null;
+
+        System.out.print("Enter ATM name: ");
+        String atmName = sc.nextLine();
+        System.out.print("Enter ATM code number: ");
+        int codeNo = sc.nextInt();
+        sc.nextLine();
+        System.out.print("Enter ATM location: ");
+        String location = sc.nextLine();
+
+        System.out.print("Enter customer name: ");
+        String custName = sc.nextLine();
+        System.out.print("Enter account number: ");
+        String accNo = sc.nextLine();
+        System.out.print("Enter initial balance: ");
+        double balance = sc.nextDouble();
+
+        if (bankChoice == 1) {
+            bank = new SBI_Bank(atmName, codeNo, location, custName, accNo, balance);
+        } else if (bankChoice == 2) {
+            bank = new HDFC_Bank(atmName, codeNo, location, custName, accNo, balance);
+        } else {
+            System.out.println("Invalid bank selection.");
+            sc.close();
+            System.exit(0);
+        }
+
+        while (true) {
+            System.out.println("\nMenu:");
+            System.out.println("1. View Balance");
+            System.out.println("2. Withdraw");
+            System.out.println("3. Deposit");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    bank.viewBalance();
+                    break;
+                case 2:
+                    System.out.print("Enter amount to withdraw: ");
+                    double withdrawAmt = sc.nextDouble();
+                    bank.withdraw(withdrawAmt);
+                    break;
+                case 3:
+                    System.out.print("Enter amount to deposit: ");
+                    double depositAmt = sc.nextDouble();
+                    bank.deposit(depositAmt);
+                    break;
+                case 4:
+                    System.out.println("Thank you for using the ATM.");
+                    sc.close();
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+}
